@@ -1,142 +1,102 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "This is a simple API",
     "version" : "1.0.0",
-    "title" : "Simple Inventory API",
-    "contact" : {
-      "email" : "you@your-company.com"
-    },
-    "license" : {
-      "name" : "Apache 2.0",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    "title" : "PetStore on Heroku",
+    "description" : "**This example has a working backend hosted in Heroku**\n\nYou can try all HTTP operation described in this Swagger spec.\n\nFind source code of this API [here](https://github.com/mohsen1/petstore-api)\n"
   },
-  "tags" : [ {
-    "name" : "admins",
-    "description" : "Secured Admin-only calls"
-  }, {
-    "name" : "developers",
-    "description" : "Operations available to regular developers"
-  } ],
-  "schemes" : [ "https" ],
+  "consumes" : [ "application/json", "text/xml" ],
+  "produces" : [ "application/json", "text/html" ],
   "paths" : {
-    "/inventory" : {
+    "/" : {
       "get" : {
-        "tags" : [ "developers" ],
-        "summary" : "searches inventory",
-        "operationId" : "searchInventory",
-        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
-        "produces" : [ "application/json" ],
         "parameters" : [ {
-          "in" : "query",
-          "name" : "searchString",
-          "description" : "pass an optional search string for looking up inventory",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "in" : "query",
-          "name" : "skip",
-          "description" : "number of records to skip for pagination",
-          "type" : "integer",
-          "format" : "int32",
-          "minimum" : 0
-        }, {
-          "in" : "query",
           "name" : "limit",
-          "description" : "maximum number of records to return",
+          "in" : "query",
+          "description" : "number of pets to return",
           "type" : "integer",
-          "format" : "int32",
-          "minimum" : 0,
-          "maximum" : 50
+          "default" : 12,
+          "minimum" : 10,
+          "maximum" : 10000
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
+            "description" : "List all pets",
             "schema" : {
+              "title" : "Pets",
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/InventoryItem"
+                "$ref" : "#/definitions/Pet"
               }
             }
-          },
-          "400" : {
-            "description" : "bad input parameter"
           }
         }
       },
       "post" : {
-        "tags" : [ "admins" ],
-        "summary" : "adds an inventory item",
-        "operationId" : "addInventory",
-        "description" : "Adds an item to the system",
-        "consumes" : [ "application/json" ],
-        "produces" : [ "application/json" ],
         "parameters" : [ {
+          "name" : "pet",
           "in" : "body",
-          "name" : "inventoryItem",
-          "description" : "Inventory item to add",
+          "description" : "The pet JSON you want to post",
           "schema" : {
-            "$ref" : "#/definitions/InventoryItem"
-          }
+            "$ref" : "#/definitions/Pet"
+          },
+          "required" : true
         } ],
         "responses" : {
-          "201" : {
-            "description" : "item created"
+          "200" : {
+            "description" : "Make a new pet"
+          }
+        }
+      },
+      "put" : {
+        "parameters" : [ {
+          "name" : "pet",
+          "in" : "body",
+          "description" : "The pet JSON you want to post",
+          "schema" : {
+            "$ref" : "#/definitions/Pet"
           },
-          "400" : {
-            "description" : "invalid input, object invalid"
-          },
-          "409" : {
-            "description" : "an existing item already exists"
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updates the pet"
+          }
+        }
+      }
+    },
+    "/{petId}" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "petId",
+          "in" : "path",
+          "type" : "string",
+          "description" : "ID of the pet",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Sends the pet with pet Id"
           }
         }
       }
     }
   },
   "definitions" : {
-    "InventoryItem" : {
+    "Pet" : {
       "type" : "object",
-      "required" : [ "id", "name", "manufacturer", "releaseDate" ],
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        },
-        "name" : {
-          "type" : "string",
-          "example" : "Widget Adapter"
-        },
-        "releaseDate" : {
-          "type" : "string",
-          "format" : "int32",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "manufacturer" : {
-          "$ref" : "#/definitions/Manufacturer"
-        }
-      }
-    },
-    "Manufacturer" : {
-      "required" : [ "name" ],
       "properties" : {
         "name" : {
-          "type" : "string",
-          "example" : "ACME Corporation"
+          "type" : "string"
         },
-        "homePage" : {
-          "type" : "string",
-          "format" : "url",
-          "example" : "https://www.acme-corp.com"
-        },
-        "phone" : {
-          "type" : "string",
-          "example" : "408-867-5309"
+        "birthday" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     }
   },
   "host" : "virtserver.swaggerhub.com",
-  "basePath" : "/tukonaho/Testing/1.0.0"
+  "basePath" : "/tukonaho/Testing/1.0.0",
+  "schemes" : [ "https", "http" ]
 }
